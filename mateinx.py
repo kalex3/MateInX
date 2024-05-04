@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-import chess
+import argparse,chess
 
-strategy={}
+parser=argparse.ArgumentParser(description='Chess puzzle solver',formatter_class=argparse.RawTextHelpFormatter)
+parser.add_argument('position',nargs='?',type=str,help='Chess position given in FEN notation\n(if omitted, the program reads it from stdin)')
+parser.add_argument('-p','--player',choices=['w','white','b','black','i','input'],help="Player to win (defaults to the player on turn)\n(if 'input' is given, the program reads it from second line of stdin)",default='d')
+parser.add_argument('-d','--depth',type=int,help="Search depth (defaults to 5)", default=5)
+args = parser.parse_args()
 
-def solve(board,player,d=0,depth=5):
+strategy = {}
+
+def solve(board,player,d,depth):
     if board.is_checkmate() and board.outcome().winner==player:
         return 1
     if d>=depth:
@@ -26,11 +32,16 @@ def solve(board,player,d=0,depth=5):
                 return 0
         return 1
 
-board = chess.Board(input())
-player=int(input())
-depth=int(input())
+board = chess.Board(input() if args.position is None else args.position)
 if not board.is_valid():
     raise ValueError("Invalid position")
-print(solve(board,player,0,depth))
-# for key,value in strategy.items():
-#     print(f"{key} : {value}")
+player = {'w':1,'b':0}.get(input()[:1].lower() if args.player[0]=='i' else args.player[0], board.turn)
+
+for i in range(1,args.depth+1):
+    strategy={}
+    if solve(board,player,0,i):
+        print(f"{['Black','White'][player]} has mate in {i}")
+        # print(strategy)
+        break
+else:
+    print(f"{['Black','White'][player]} doesn't have mate in {i}")
