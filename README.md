@@ -27,3 +27,4 @@ options:
   -d DEPTH, --depth DEPTH
                         Search depth (defaults to 5)
 ```
+To get the [FEN](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation) of a chess position, you can use the [Lichess board editor](https://lichess.org/editor).
