@@ -41,7 +41,28 @@ for i in range(1,args.depth+1):
     strategy={}
     if solve(board,player,0,i):
         print(f"{['Black','White'][player]} has mate in {i}")
-        # print(strategy)
+        print(f"{['Black','White'][player]}'s winning strategy:")
+        original=board.copy()
+        while True:
+            print(board)
+            while not board.is_checkmate():
+                if board.turn==player:
+                    print(f"{['Black','White'][player]}'s move: {board.san(strategy[board.fen()])}")
+                    board.push(strategy[board.fen()])
+                else:
+                    if board.legal_moves.count()>1:
+                        print([board.san(move) for move in board.legal_moves])
+                        board.push_san(input(f"Enter {['black','white'][player^1]}'s move: "))
+                    else:
+                        move=list(board.legal_moves)[0]
+                        print(f"{['Black','White'][player^1]}'s move: {board.san(move)} (the only legal move)")
+                        board.push(move)
+                print(board)
+            board=original.copy()
+            if input("Exit? (y/n) ")[:1].lower()=='n':
+                continue
+            else:
+                break
         break
 else:
     print(f"{['Black','White'][player]} doesn't have mate in {i}")
